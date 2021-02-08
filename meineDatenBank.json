@@ -1,0 +1,75 @@
+{
+  "recordsShop": [
+    {
+      "interpret": "Singer",
+      "album": "Worst of all",
+      "id": "1612291658086"
+    },
+    {
+      "interpret": "Singer",
+      "album": "Best of",
+      "id": "1612291665967"
+    },
+    {
+      "interpret": "Singer",
+      "album": "Greatest Hits",
+      "id": "1612291675486"
+    },
+    {
+      "interpret": "Singer",
+      "album": "Compiled",
+      "id": "1612291682418"
+    },
+    {
+      "interpret": "Band",
+      "album": "Amazing Hits",
+      "id": "1612291708450"
+    },
+    {
+      "interpret": "Band",
+      "album": "Live Tour 2020",
+      "id": "1612291737545"
+    }
+  ],
+  "users": [
+    {
+      "vorname": "Ben",
+      "eMail": "B.Harrington@gmail.com",
+      "password": "bigSecret123",
+      "id": "1612448995614"
+    },
+    {
+      "vorname": "Ken",
+      "eMail": "K.Smith@yahoo.com",
+      "password": "bigSecret456",
+      "id": "1612449030028"
+    }
+  ],
+  "orders": [
+    {
+      "productID": "778953",
+      "amount": "8",
+      "id": "1612453751833"
+    },
+    {
+      "productID": "756456",
+      "amount": "1",
+      "id": "1612453760318"
+    },
+    {
+      "productID": "75466545454",
+      "amount": "10",
+      "id": "1612453766595"
+    },
+    {
+      "productID": "456654",
+      "amount": "1",
+      "id": "1612453776766"
+    },
+    {
+      "productID": "65865",
+      "amount": "1",
+      "id": "1612453782431"
+    }
+  ]
+}
