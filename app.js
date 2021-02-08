@@ -39,8 +39,6 @@ db.once('open', ()=>{
 app.use(logger('dev'));
 
 /** Anfrage (Request) Parser */
-app.use(express.json());
-
 //diese Middleware ist dazu da, damit POST im Body JSON Objekte vorhanden sein können////
 //1. ist da damit es bei Postman funkt dort muss ich auch urlencoded im Body einstellen
 //2. senden aus dem Browser

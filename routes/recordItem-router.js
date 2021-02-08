@@ -6,7 +6,8 @@ const RecordItem = require("../models/recordItem")
 
 //Datenmodell von Mongoose nehmen und Daten ausgeben lassen find hat Parameter error und docs (Datendokumente)
 //als Callback Funktion um andere Sachen nicht zu blockieren
-
+//Datenbank ist asyncroner code entweder mit Callback (mit err und ergebnis), Promise (mit .then und catch ) oder async/ await (mit try & catch)
+//Merhoden auf dem Modell sind z.b. save, find, updateOne, deleteOne
 
 router.get('/', function(req, res, next){
     RecordItem.find((err, docs)=>{
@@ -19,7 +20,7 @@ router.get('/', function(req, res, next){
   
 })
 
-module.exports = router
+
 
 
 router.post('/', function(req, res, next){
@@ -34,11 +35,11 @@ router.post('/', function(req, res, next){
     })
 })
 
-/////////////////////Double Check PUT/////////////////////////////////////////////////////////////////////////////
 
-router.put('/:_id', function(req, res, next){
+
+router.put('/:_id', function(req, res, next){ 
     const aenderung = req.body;
-    const {_id} = req.params
+    const {_id} = req.params.id
     if(!_id){
         res.status(402).send('ID fehlt')
     }else{ 
@@ -49,6 +50,16 @@ router.put('/:_id', function(req, res, next){
     }
 })
 
+router.delete('./:_id', function(req, res, next){
+    const {_id} =req.params.id
+    if(!_id){
+        res.status(402).send('ID missing')
+    }else{
+        RecordItem.deleteOne((err, result)=>{
+            res.status(200).send('following record was deleted', result)
+        })
+    }
+})
 
 
-
+module.exports = router
