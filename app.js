@@ -11,7 +11,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const recordsRouter = require('./routes/records')
 const ordersRouter = require('./routes/orders');
-const recordItemRouter = require('./routes/recordItem-router')
+
 
 
 /** Initialisierung */
@@ -72,7 +72,7 @@ app.use('/users', usersRouter);
 app.use('/records', recordsRouter);
 app.use('/users',usersRouter);
 app.use('/orders',ordersRouter)
-app.use('/recordItem', recordItemRouter)
+
 
 
 //Fehlerbehandlung muss als letztes stehen, nach den Pfaden

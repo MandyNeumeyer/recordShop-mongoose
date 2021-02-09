@@ -15,7 +15,7 @@ const RecordItem = new Schema({
 //zusammenarbeitet 
 //2 Parameter, das erste ist die Mongodatenbank (Collection), zweite ist das Schema, wenn man als drittes Argument nochmal die 
 //Collection mit rein gibt, verhindert man ein automatisch kreiertes "Mehrzahl s" beim erstellen der Collection
-module.exports = mongoose.model('records', RecordItem, 'records')
+module.exports = mongoose.model('records', RecordItem)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //weitere Options zum Datenschema anlegen bspw.

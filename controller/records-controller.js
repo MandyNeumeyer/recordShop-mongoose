@@ -1,73 +1,96 @@
-//----------------Start Setup für lowdb: npm i lowdb (eine kleine Datenbank)-------------
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const adapter = new FileSync('meineDatenBank.json');
-const meineDatenBank = low(adapter)
-//in der Datenbank ein Array speichern, unter der Eigenschaft 'recordShop':
-meineDatenBank.defaults({ recordsShop: [] }).write();
-///----------------Ende Setup für lowbd--------------------------------------------------
+//npm packet um codesparender (1 Zeile) Fehler zu schreiben
+const createError = require('http-errors')
+//importiere das Model für Records (RecordItem)
+const RecordItem = require('../models/recordItem')
 
 
+//RecordsPostController mit MongoDB/ Mongoose and async await and save
+// const recordsPostController = async(req, res, next)=>{
+//     try{ 
+//         const neueDaten = new RecordItem(req.body) ;
+//         await neueDaten.save()
+//         res.status(201).send(neueDaten)
+//     }catch(error){ 
+//         //dieser Fehler wird mit next an die Fehlerbehandlungsfunktion weitergegen
+//         next(error)
+//     }
+// }   
 
-const recordsPostController = (req, res, next) => {
-    let newItem = {
-        interpret: req.body.interpret,
-        album: req.body.album
-    }
-    //prüfen ob Eingaben vollständig sind, sonst Fehler werfen
-    if (newItem.interpret && newItem.album) {
-        meineDatenBank.get('recordsShop').push(newItem)
-            //als letzten Eintrag hinzufügen
-            .last()
-            //aus dem aktuellen Datum wir eine eindeutige ID für den Eintrag
-            .assign({ id: Date.now().toString() })
-            .write()
-        res.status(200).send(newItem)
-    } else {
-        //wenn die Daten fehlen, wirf einen Fehler
-        let error = new Error('Interpret und Album müssen definiert sein')
-        //Status code heißt Server understands request, but incomplete Info send
-        error.statusCode = 422;
-        //wir schmeißen den Fehler, welcher von der Middleware in app.js gefangen wird
-        throw error
-
+//Post Controller mit MongoDB und create()
+const recordsPostController = async(req, res, next)=>{
+    try{
+        const myNewRecord = await RecordItem.create(req.body)
+        res.status(201).send(myNewRecord)
+    }catch(error){
+        next(error)
     }
 }
 
-const recordsGetController = (req, res, next) => {
-    const recordsShop = meineDatenBank.get('recordsShop').value();
-    res.status(200).send(recordsShop)
+//RecordsPostController mit MongoDB/ Mongoose and call back and create
+
+// const recordsPostController =(req, res, next)=>{
+//     const neueDaten = req.body;
+//     RecordItem.create(neueDaten, (err, ergebnis)=>{
+//         if(err){
+//             res.status(500).send('Error by creating the new entry'+err)
+//         }else{
+//             //http status code für erfolgreiches anlegen einer resource 201
+//             res.status(201).send(ergebnis)
+//         }
+//     })
+// }
+
+
+//RecordsGetController mit MongoDB/ Mongoose
+const recordsGetController = async(req, res, next)=>{
+    try{
+        const myRecordlist = await RecordItem.find({})
+        res.status(200).send(myRecordlist)
+    }catch(error){
+        next(error)
+    }
 }
 
 
-const recordsGetOneController = (req, res, next) => {
-    const {id} = req.params;
-    const recordsShop = meineDatenBank.get('recordsShop')
-    .filter({id})
-    .value()
-    res.status(200).send(recordsShop)
+
+//RecordsGetOneController mit MongoDB/ Mongoose
+const recordsGetOneController = async(req, res, next) => {
+    try{ 
+        const {id} = req.params;
+        const recordWithId = await RecordItem.find({_id:id});
+        //hier können wir auch unsere eigenen Fehler einbauen, da wenn es eine gültige ID ist, wir
+        //von der Datenbank keinen Fehler zurück bekommen, sondern ein leeres Array - das wollen wir nicht unbedingt
+        //wir bekommen den selben Fehler nun auch, wenn die ID falsch ist
+        if(recordWithId.length<1) throw new Error
+        res.status(200).send(recordWithId)
+
+    }catch(error){
+        let myError = createError(404, `die CD mit der ${req.params.id} gibt es nicht.`)
+        next(myError)
+    }
 }
 
-
-
-const recordsDeleteController = (req, res, next) => {
-    const { id } = req.params;
-    const recordToDelete = meineDatenBank
-    .get('recordsShop')
-    .remove({ id })
-    .write()
-    res.send('I have deleted the album with the ID'+id)
+//RecordsDeleteController mit MongoDB/ Mongoose
+const recordsDeleteController = async (req, res, next) => {
+    try{ 
+    const {id} =req.params
+    const recordToDelete = await RecordItem.deleteOne({_id:id})
+    res.status(200).send(recordToDelete)
+    }catch(error){ 
+        next(error)
+    }
 }
 
-const recordsPutController = (req, res, next) =>{
+//Why is put not working?????????????????????????????????????????????????????????????????????????????????????????????
+const recordsPutController = async (req, res, next) =>{
+    try {
     const {id} =req.params;
     const valuesToChange =req.body;
-    const recordsAvailable=meineDatenBank
-    .get('recordsShop')
-    .find({id})
-    .assign(valuesToChange)
-    .write()
-    res.status(200).send(recordsAvailable)
+    const updatedRecordEntry = await RecordItem.updateOne({_id:id}, {valuesToChange})
+    res.status(200).send(updatedRecordEntry)
+    }catch(error){
+        next(error)
+    }
 }
 
 
