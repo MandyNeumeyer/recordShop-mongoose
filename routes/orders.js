@@ -7,7 +7,7 @@ const router = express.Router();
 // //// BIG PROJECTS VARIANTE CONTROLLER AUSLAGERN ZUR BESSEREN ÜBERSICHT UND ZUR HILFE BEI DER FEHLERSUCHE-----------------
 
 // //importiere die Funktionen hier
-const { ordersPostController, ordersGetController, ordersGetOneController, ordersPutController } = require('../controller/orders-controller');
+const { ordersPostController, ordersGetController, ordersGetOneController, ordersPutController, ordersDeleteController } = require('../controller/orders-controller');
 
 // //übersichtlichere Schreibweise - auf einen Blick, auf welcher Route, werden welche HTTP Methoden verarbeitet
 router
@@ -20,7 +20,7 @@ router
 router
     .route('/:id')
     .put(ordersPutController)
-    // //   .delete(ordersDeleteController)
+    .delete(ordersDeleteController)
     .get(ordersGetOneController)
 
 

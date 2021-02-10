@@ -4,7 +4,7 @@ const router = express.Router();
 
 ///Funktionen in einem Ordner Controllers ausgelagert - kein muss, aber übersichtlicher bei großen Projekten und zur Fehlersuche
 
-const { usersGetController, usersPostController, usersPutController, usersDeleteController,usersGetOneController } = require('../controller/users-controller');
+const { usersGetController, usersGetOneController, usersPostController, usersPutController, usersDeleteController } = require('../controller/users-controller');
 
 router
   .route('/')

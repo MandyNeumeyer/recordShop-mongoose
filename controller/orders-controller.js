@@ -71,16 +71,26 @@ const ordersGetOneController = async (req, res, next) => {
     }
 }
 
-////////// Why is PUT not working???????????????????????????????????????????????????????????????????????????????????????
-
 
 
 const ordersPutController = async (req, res, next) =>{
     try {
     const {id} =req.params;
     const valuesToChange =req.body;
-    const updatedOrderEntry = await RecordItem.updateOne({_id:id}, {valuesToChange})
+    const updatedOrderEntry = await Order.updateOne({_id:id},valuesToChange)
     res.status(200).send(updatedOrderEntry)
+    }catch(error){
+        next(error)
+    }
+}
+
+
+
+const ordersDeleteController = async (req, res, next)=>{
+    try{
+        const {id} = req.params;
+        let orderToDelete = await Order.deleteOne({_id:id});
+        res.status(200).send(orderToDelete)
     }catch(error){
         next(error)
     }
@@ -93,5 +103,4 @@ const ordersPutController = async (req, res, next) =>{
 
 
 
-
-module.exports = { ordersPostController, ordersGetController, ordersGetOneController, ordersPutController }
+module.exports = { ordersPostController, ordersGetController, ordersGetOneController, ordersPutController, ordersDeleteController }
