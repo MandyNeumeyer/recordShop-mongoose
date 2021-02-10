@@ -6,7 +6,8 @@ const {Schema} = mongoose;
 const RecordItem = new Schema({
         interpret:String,
         album:String,
-
+        year:Number,
+        picture:String
 });
 
 

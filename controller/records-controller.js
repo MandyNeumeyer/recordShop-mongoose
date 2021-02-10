@@ -2,6 +2,33 @@
 const createError = require('http-errors')
 //importiere das Model für Records (RecordItem)
 const RecordItem = require('../models/recordItem')
+//importiere die Funktion für die Validierung
+const { validationResult } = require('express-validator')
+
+
+
+
+//Post Controller mit MongoDB und create() und Validierung
+const recordsPostController = async (req, res, next) => {
+    try {
+        //als erstes Validierung durchführen
+        const errors = validationResult(req);
+        //wenn Fehler, dann schicke eine Fehlermeldung zurück (errors, das zurückkommt ist ein Array - weil mehrere Fehler 
+        //auftauchen können)
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                validDataRecord: errors.array(),
+            })
+        }
+
+        const myNewRecord = await RecordItem.create(req.body)
+        res.status(201).send(myNewRecord)
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 
 //RecordsPostController mit MongoDB/ Mongoose and async await and save
@@ -15,16 +42,6 @@ const RecordItem = require('../models/recordItem')
 //         next(error)
 //     }
 // }   
-
-//Post Controller mit MongoDB und create()
-const recordsPostController = async(req, res, next)=>{
-    try{
-        const myNewRecord = await RecordItem.create(req.body)
-        res.status(201).send(myNewRecord)
-    }catch(error){
-        next(error)
-    }
-}
 
 //RecordsPostController mit MongoDB/ Mongoose and call back and create
 
@@ -42,11 +59,11 @@ const recordsPostController = async(req, res, next)=>{
 
 
 //RecordsGetController mit MongoDB/ Mongoose
-const recordsGetController = async(req, res, next)=>{
-    try{
+const recordsGetController = async (req, res, next) => {
+    try {
         const myRecordlist = await RecordItem.find({})
         res.status(200).send(myRecordlist)
-    }catch(error){
+    } catch (error) {
         next(error)
     }
 }
@@ -54,17 +71,17 @@ const recordsGetController = async(req, res, next)=>{
 
 
 //RecordsGetOneController mit MongoDB/ Mongoose
-const recordsGetOneController = async(req, res, next) => {
-    try{ 
-        const {id} = req.params;
-        const recordWithId = await RecordItem.find({_id:id});
+const recordsGetOneController = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const recordWithId = await RecordItem.find({ _id: id });
         //hier können wir auch unsere eigenen Fehler einbauen, da wenn es eine gültige ID ist, wir
         //von der Datenbank keinen Fehler zurück bekommen, sondern ein leeres Array - das wollen wir nicht unbedingt
         //wir bekommen den selben Fehler nun auch, wenn die ID falsch ist
-        if(recordWithId.length<1) throw new Error
+        if (recordWithId.length < 1) throw new Error
         res.status(200).send(recordWithId)
 
-    }catch(error){
+    } catch (error) {
         let myError = createError(404, `die CD mit der ${req.params.id} gibt es nicht.`)
         next(myError)
     }
@@ -72,23 +89,23 @@ const recordsGetOneController = async(req, res, next) => {
 
 //RecordsDeleteController mit MongoDB/ Mongoose
 const recordsDeleteController = async (req, res, next) => {
-    try{ 
-    const {id} =req.params
-    const recordToDelete = await RecordItem.deleteOne({_id:id})
-    res.status(200).send(recordToDelete)
-    }catch(error){ 
+    try {
+        const { id } = req.params
+        const recordToDelete = await RecordItem.deleteOne({ _id: id })
+        res.status(200).send(recordToDelete)
+    } catch (error) {
         next(error)
     }
 }
 
 //RecordsPutController mit MongoDB/ Mongoose
-const recordsPutController = async (req, res, next) =>{
+const recordsPutController = async (req, res, next) => {
     try {
-    const {id} =req.params;
-    const valuesToChange =req.body;
-    const updatedRecordEntry = await RecordItem.findOneAndUpdate({_id:id}, valuesToChange)
-    res.status(200).send(updatedRecordEntry)
-    }catch(error){
+        const { id } = req.params;
+        const valuesToChange = req.body;
+        const updatedRecordEntry = await RecordItem.findOneAndUpdate({ _id: id }, valuesToChange)
+        res.status(200).send(updatedRecordEntry)
+    } catch (error) {
         next(error)
     }
 }
