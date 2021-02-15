@@ -5,7 +5,7 @@ const {Schema} = mongoose;
 const User = new Schema({
         nachname:String,
         eMail:String,
-        password:Number,
+        password:String,
 });
 
 

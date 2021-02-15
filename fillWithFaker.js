@@ -8,7 +8,8 @@ const User = require('./models/user.js')
 mongoose.connect("mongodb://localhost:27017/myDatabase", {
     useNewUrlParser: true,
 	useCreateIndex: true,
-	useUnifiedTopology: true,
+    useUnifiedTopology: true,
+    // useFindAndModify:false,
 })
 
 const db = mongoose.connection;
@@ -29,6 +30,7 @@ db.once('open', ()=>{
             password:faker.internet.password(),
         }
         zufallsNutzer.push(newUser);
+        console.log(zufallsNutzer)
     }
     User.insertMany(zufallsNutzer, (error, ergebnis)=>{
         if(error){

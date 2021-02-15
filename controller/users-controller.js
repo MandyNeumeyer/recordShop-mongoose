@@ -2,10 +2,11 @@
 const createError = require('http-errors')
 //importiere das Model für User (User)
 const User = require('../models/user')
+//npm paket für validation als Alternative zu Mongoose Schemas
+const { validationResult } = require('express-validator')
+//npm install bcrypt
+const bcrypt = require('bcrypt')
 
-
-//???????????????????????????????????????????????????????????????????????????????????????????????????????????????
-//why do I dont get fake users???????????????????????????????????????????????????????????????????????????????????
 
 
 /////Beispiel mit Promises///////////////////////////////////////////////////////////////////////////////////////////
@@ -48,11 +49,27 @@ const usersGetOneController = async (req, res, next)=> {
 
 const usersPostController = async(req, res, next) => {
     try {
-        const neueDaten = new User(req.body);
-        await neueDaten.save()
-        res.status(201).send(neueDaten)
+       let newUser =req.body
+        const errors = validationResult(req)
+        console.log(errors);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                validUser: errors.array(),
+            })
+        }
+        //optionaler check - gibt es schon einen Nutzer mit dieser E-Mail Adresse?
+        let alreadyExists = await User.find({eMail:newUser.eMail});
+        if(alreadyExists.length>=1){
+            return res.status(409).send('A user already exists with this email-adress')
+        }
+
+        //bevor wir speichern muss das Passwort verschlüsselt werden!!!
+        let passwordGehashed = await bcrypt.hash(newUser.password, 10)
+        let createUser = await User.create({...newUser, password:passwordGehashed})
+        res.status(201).send(createUser)
     } catch (error) {
-        //dieser Fehler wird mit next an die Fehlerbehandlungsfunktion weitergegen
+
+        //dieser Fehler wird mit next an die Fehlerbehandlungsfunktion weitergegeben
         next(error)
     }
 
