@@ -55,8 +55,9 @@ const validUserPut =[
 
 ///Funktionen in einem Ordner Controllers ausgelagert - kein muss, aber übersichtlicher bei großen Projekten und zur Fehlersuche
 
-const { usersGetController, usersGetOneController, usersPostController, usersPutController, usersDeleteController } = require('../controller/users-controller');
+const { usersGetController, usersGetOneController, usersPostController, usersPutController, usersDeleteController, userLogin } = require('../controller/users-controller');
 
+//die mit Express Validator festgelegte Validierung wird an die router => controller übergeben
 router
   .route('/')
   .get(usersGetController)
@@ -64,10 +65,14 @@ router
 
 router
   .route('/:id')
-  .put(usersPutController)
+  .put(validUserPut,usersPutController)
   .delete(usersDeleteController)
   .get(usersGetOneController)
 
+//Route wenn der user einloggt
+router
+  .route('/login')
+  .post(userLogin)
 
 
 module.exports = router
