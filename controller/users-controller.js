@@ -6,6 +6,8 @@ const User = require('../models/user')
 const { validationResult } = require('express-validator')
 //npm install bcrypt
 const bcrypt = require('bcrypt')
+//npm install jsonwebtoken
+const jwt = require('jsonwebtoken')
 
 
 
@@ -93,6 +95,12 @@ const usersPutController = async (req, res, next) => {
     try {
         const { id } = req.params;
         const valuesToChange = req.body;
+
+        //ist das ID im Token das gleiche wie im Pfad? 
+        if(id !== req.tokenUser.userId){
+            return res.status(400).send('You are not authorized!')
+        }
+
         //validate input with Express validator rules defined in users.js
         const errors = validationResult(req)
         console.log(errors);
@@ -131,9 +139,21 @@ const userLogin = async (req, res, next) => {
         console.log(passwordCompared)
         //wenn Vergleich des Passwords erfolgreich ist
         if (passwordCompared) {
+        //damit wir den Nutzer wiedererkennen können, schicken wir ein Token zurück - in diesem Objekt können wir frei 
+        //entscheiden, welche Daten wir zurückschicken jwt.sign (Methode von jsonwebtoken) nimmt 3 Parameter, das Objekt mit Infos, 
+        //ein Geheimnis <=(Zeichenkette wird übersetzt), wie lange soll der Token gültig sein
+        //der Token wird im Browser gespeichert, solange wir angeben, das es gespeichert werden soll
+            let token = jwt.sign({
+                eMail:userAlready.eMail,
+                userId:userAlready._id,
+                //Geheimniss in .env ausgelagert
+            },process.env.JWT || 'ein Geheimniss', {expiresIn:'3h'} 
+            )
             res.status(200).json({
-                message: 'You are logged in'
+                nachricht: 'You are logged in',
+                token:token
             })
+            
         }
      } 
      catch (error) {

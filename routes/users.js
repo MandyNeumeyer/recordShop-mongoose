@@ -4,6 +4,9 @@ const router = express.Router();
 // npm install --save express-validator
 //wir importieren die Check Funktion von Express Validator
 const {check} = require('express-validator');
+//authorization middleware importieren diese auf Route User Put einfügen, stellt sicher das nur eingeloggter Nutzer 
+//Daten verändern kann
+const auth = require('../middleware/auth')
 
 //Express Validator für Users auf POST
 const validUser =[
@@ -65,7 +68,8 @@ router
 
 router
   .route('/:id')
-  .put(validUserPut,usersPutController)
+  //nur ein eingeloggter Nutzer soll seine eigenen Daten ändern können
+  .put(auth,validUserPut,usersPutController)
   .delete(usersDeleteController)
   .get(usersGetOneController)
 
