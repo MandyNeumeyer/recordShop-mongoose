@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-
+//.env
+require('dotenv').config()
 /**
  * Module dependencies.
  */
@@ -7,6 +8,8 @@
 const app = require('../app');
 const debug = require('debug')('record-shop:server');
 const http = require('http');
+
+
 
 /**
  * Get port from environment and store in Express.

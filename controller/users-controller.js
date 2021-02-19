@@ -163,7 +163,7 @@ const userLogin = async (req, res, next) => {
 }
 
 
-
+console.log(process.env)
 
 
 
